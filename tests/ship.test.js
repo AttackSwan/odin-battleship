@@ -40,13 +40,19 @@ describe("Ship", () => {
 
 	test("Creating a Ship with a Length of 0 should throw an error", () => {
 		expect(() => new Ship(0)).toThrowError(
-			"Ship length must be greater than zero."
+			"Ship length must be between 2 and 5."
 		);
 	});
 
 	test("Creating a Ship with a Negative Length should throw an error", () => {
 		expect(() => new Ship(-2)).toThrowError(
-			"Ship length must be greater than zero."
+			"Ship length must be between 2 and 5."
+		);
+	});
+
+	test("Creating a Ship with a large length should throw an error", () => {
+		expect(() => new Ship(10)).toThrowError(
+			"Ship length must be between 2 and 5."
 		);
 	});
 });

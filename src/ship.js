@@ -1,22 +1,25 @@
 class Ship {
-	constructor(length = 0) {
+	constructor(length = 0, name = "") {
+		const minLength = 2;
+		const maxLength = 5;
+		if (length < minLength || length > maxLength) {
+			throw new Error("Ship length must be between 2 and 5.");
+		}
+		this.name = name;
 		this.length = length;
 		this.hits = 0;
 		this.sunk = false;
 	}
 
 	hit() {
-		if (this.hits < this.length) {
+		if (!this.isSunk()) {
 			this.hits++;
-			this.checkIfSunk();
+			this.sunk = this.isSunk();
 		}
 	}
 
-	checkIfSunk() {
-		if (this.hits === this.length) {
-			return true;
-		}
-		return false;
+	isSunk() {
+		return this.hits === this.length;
 	}
 }
 
