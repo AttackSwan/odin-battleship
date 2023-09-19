@@ -6,6 +6,7 @@ class Gameboard {
 		this.board = [];
 		this.ships = [];
 		this.initialiseBoard();
+		this.attackMarker = "attacked";
 	}
 
 	initialiseBoard() {
@@ -20,6 +21,15 @@ class Gameboard {
 			return false;
 		}
 		//place ship
+		const newShip = new Ship(length, name);
+
+		for (let i = 0; i < length; i++) {
+			if (isVertical) {
+				this.board[y + i][x] = newShip;
+			} else if (!isVertical) {
+				this.board[y][x + i] = newShip;
+			}
+		}
 		return true;
 	}
 
@@ -50,11 +60,16 @@ class Gameboard {
 	}
 
 	receiveAttack(x, y) {
-		if (this.isValidXY(x, y) && this.hasNotBeenAttacked(x, y)) {
+		if (!this.isValidAttack(x, y)) {
+			return false;
 		}
+		// Make attack on ship at x,y
+		this.board[y][x] = this.attackMarker;
 	}
 
-	isValidAttack(x, y) {}
+	isValidAttack(x, y) {
+		return this.isValidXY(x, y) && this.board[y][x] !== this.attackMarker;
+	}
 }
 
 export default Gameboard;

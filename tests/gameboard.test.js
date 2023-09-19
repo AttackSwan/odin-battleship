@@ -13,8 +13,8 @@ describe("Gameboard", () => {
 	});
 
 	test("Places ships in valid positions", () => {
-		expect(board.placeShip(0, 0, 5, true, "Carrier")).toBe(true);
-		expect(board.placeShip(9, 0, 4, true, "Battleship")).toBe(true);
+		expect(board.placeShip(0, 0, 5, true)).toBe(true);
+		expect(board.placeShip(9, 0, 4, true)).toBe(true);
 		expect(board.placeShip(3, 5, 3, false)).toBe(true);
 		expect(board.placeShip(7, 9, 3, false)).toBe(true);
 	});
@@ -27,6 +27,14 @@ describe("Gameboard", () => {
 	test("Does not place ships crossing edge of board", () => {
 		expect(board.placeShip(1, 8, 4, true)).toBe(false);
 		expect(board.placeShip(9, 4, 3, false)).toBe(false);
+	});
+
+	test("Does not place ships over other ships", () => {
+		expect(board.placeShip(2, 2, 5, true)).toBe(true);
+		expect(board.placeShip(1, 2, 3, false)).toBe(false);
+		expect(board.placeShip(4, 4, 4, false)).toBe(true);
+		expect(board.placeShip(2, 3, 3, true)).toBe(false);
+		expect(board.placeShip(5, 2, 4, true)).toBe(false);
 	});
 
 	// test("Receives a valid attack", () => {
