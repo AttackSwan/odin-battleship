@@ -5,13 +5,19 @@ class Gameboard {
 		this.size = size;
 		this.board = [];
 		this.ships = [];
-		this.initialiseBoard();
+		this.initializeBoard();
 	}
 
-	initialiseBoard() {
-		this.board = Array(this.size)
-			.fill(null)
-			.map(() => Array(this.size).fill("empty"));
+	initializeBoard() {
+		// Initialize the board as a 2D array of objects
+		for (let x = 0; x < this.size; x++) {
+			const col = [];
+
+			for (let y = 0; y < this.size; y++) {
+				col.push({ isEmpty: true, isAttacked: false, ship: null });
+			}
+			this.board.push(col);
+		}
 	}
 
 	placeShip(x, y, length, isVertical, name) {
@@ -19,7 +25,18 @@ class Gameboard {
 			// Ship does not fit at given coordinates
 			return false;
 		}
+
 		//place ship
+		const newShip = new Ship(length);
+
+		for (let i = 0; i < length; i++) {
+			const newX = x + (isVertical ? 0 : i);
+			const newY = y + (isVertical ? i : 0);
+
+			const cell = this.board[newX][newY];
+			cell.isEmpty = false;
+			cell.ship = newShip;
+		}
 		return true;
 	}
 
@@ -27,13 +44,9 @@ class Gameboard {
 		let shipFits = true;
 
 		for (let i = 0; i < length; i++) {
-			if (
-				(isVertical &&
-					(!this.spaceIsEmpty(x, y + i) ||
-						!this.isValidXY(x, y + i))) ||
-				(!isVertical &&
-					(!this.spaceIsEmpty(x + i, y) || !this.isValidXY(x + i, y)))
-			) {
+			const newX = x + (isVertical ? 0 : i);
+			const newY = y + (isVertical ? i : 0);
+			if (!this.isValidXY(newX, newY) || !this.spaceIsEmpty(newX, newY)) {
 				shipFits = false;
 				break;
 			}
@@ -46,7 +59,7 @@ class Gameboard {
 	}
 
 	spaceIsEmpty(x, y) {
-		return this.isValidXY(x, y) && this.board[y][x] === "empty";
+		return this.board[x][y].isEmpty;
 	}
 
 	receiveAttack(x, y) {
@@ -55,6 +68,17 @@ class Gameboard {
 	}
 
 	isValidAttack(x, y) {}
+
+	displayBoard() {
+		for (let y = this.size - 1; y >= 0; y--) {
+			let output = "";
+			for (let x = 0; x < this.size; x++) {
+				const cell = this.board[x][y];
+				output += cell.isEmpty ? "E " : "S ";
+			}
+			console.log(output);
+		}
+	}
 }
 
 export default Gameboard;

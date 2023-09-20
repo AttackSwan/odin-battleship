@@ -8,15 +8,17 @@ describe("Gameboard", () => {
 		expect(board.board.length).toBe(10);
 		expect(board.board.every((row) => row.length === 10)).toBe(true);
 		expect(
-			board.board.every((row) => row.every((cell) => cell === "empty"))
+			board.board.every((row) => row.every((cell) => cell.isEmpty))
 		).toBe(true);
 	});
 
 	test("Places ships in valid positions", () => {
-		expect(board.placeShip(0, 0, 5, true, "Carrier")).toBe(true);
-		expect(board.placeShip(9, 0, 4, true, "Battleship")).toBe(true);
+		expect(board.placeShip(0, 0, 5, true)).toBe(true);
+		expect(board.placeShip(9, 0, 4, true)).toBe(true);
+		expect(board.placeShip(0, 9, 4, false)).toBe(true);
 		expect(board.placeShip(3, 5, 3, false)).toBe(true);
-		expect(board.placeShip(7, 9, 3, false)).toBe(true);
+		expect(board.placeShip(7, 8, 3, false)).toBe(true);
+		// board.displayBoard();
 	});
 
 	test("Does not place ships off the board", () => {
@@ -27,6 +29,12 @@ describe("Gameboard", () => {
 	test("Does not place ships crossing edge of board", () => {
 		expect(board.placeShip(1, 8, 4, true)).toBe(false);
 		expect(board.placeShip(9, 4, 3, false)).toBe(false);
+	});
+
+	test("Does not place ships crossing other ships", () => {
+		expect(board.placeShip(4, 4, 4, true)).toBe(false);
+		expect(board.placeShip(7, 1, 3, false)).toBe(false);
+		expect(board.placeShip(8, 7, 3, true)).toBe(false);
 	});
 
 	// test("Receives a valid attack", () => {
