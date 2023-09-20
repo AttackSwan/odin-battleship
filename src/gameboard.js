@@ -63,8 +63,11 @@ class Gameboard {
 	}
 
 	receiveAttack(x, y) {
-		if (this.isValidXY(x, y) && this.hasNotBeenAttacked(x, y)) {
+		if (!this.isValidAttack(x, y)) {
+			return false;
 		}
+		// Make attack on ship at x,y
+		this.board[y][x] = this.attackMarker;
 	}
 
 	isValidAttack(x, y) {}
