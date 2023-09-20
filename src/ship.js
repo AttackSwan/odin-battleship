@@ -21,6 +21,10 @@ class Ship {
 	isSunk() {
 		return this.hits === this.length;
 	}
+
+	numHits() {
+		return this.hits;
+	}
 }
 
 export default Ship;

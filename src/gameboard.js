@@ -67,10 +67,20 @@ class Gameboard {
 			return false;
 		}
 		// Make attack on ship at x,y
-		this.board[y][x] = this.attackMarker;
+		let result = "miss";
+		this.board[x][y].isAttacked = true;
+
+		if (this.board[x][y].ship) {
+			const ship = this.board[x][y].ship;
+			ship.hit();
+			result = "hit";
+		}
+		return result;
 	}
 
-	isValidAttack(x, y) {}
+	isValidAttack(x, y) {
+		return this.isValidXY(x, y) && !this.board[x][y].isAttacked;
+	}
 
 	displayBoard() {
 		for (let y = this.size - 1; y >= 0; y--) {
@@ -81,6 +91,10 @@ class Gameboard {
 			}
 			console.log(output);
 		}
+	}
+
+	getShip(x, y) {
+		return this.board[x][y].ship;
 	}
 }
 

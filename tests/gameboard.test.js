@@ -18,7 +18,6 @@ describe("Gameboard", () => {
 		expect(board.placeShip(0, 9, 4, false)).toBe(true);
 		expect(board.placeShip(3, 5, 3, false)).toBe(true);
 		expect(board.placeShip(7, 8, 3, false)).toBe(true);
-		// board.displayBoard();
 	});
 
 	test("Does not place ships off the board", () => {
@@ -37,14 +36,46 @@ describe("Gameboard", () => {
 		expect(board.placeShip(8, 7, 3, true)).toBe(false);
 	});
 
-	// test("Receives a valid attack", () => {
-	// 	expect(board.receiveAttack(2, 3)).toBe(true);
-	// 	expect(board.board[3][2]).toBe(true);
-	// });
+	test("Cannot attack the same square more than once", () => {
+		expect(board.receiveAttack(2, 3)).not.toBeFalsy();
+		expect(board.receiveAttack(2, 3)).toBe(false);
+	});
 
-	// test("Receives an invalid attack", () => {
-	// 	expect(board.receiveAttack(-1, 4)).toBe(false);
-	// 	expect(board.receiveAttack(6, 2)).toBe(false);
-	// 	expect(board.receiveAttack(3, 8)).toBe(false);
-	// });
+	test("Won't attack outside the board", () => {
+		expect(board.receiveAttack(-1, 4)).toBe(false);
+		expect(board.receiveAttack(10, 2)).toBe(false);
+		expect(board.receiveAttack("string", 8)).toBe(false);
+	});
+
+	test("Attacks successfully hit ships", () => {
+		expect(board.receiveAttack(0, 0)).toBe("hit");
+		expect(board.receiveAttack(0, 1)).toBe("hit");
+		expect(board.receiveAttack(0, 2)).toBe("hit");
+		expect(board.receiveAttack(0, 3)).toBe("hit");
+		expect(board.receiveAttack(0, 4)).toBe("hit");
+		expect(board.receiveAttack(0, 5)).toBe("miss");
+	});
+
+	test("Ships show correct number of hits", () => {
+		board.displayBoard();
+		const ship = board.getShip(9, 0);
+		expect(ship.numHits()).toBe(0);
+		expect(ship.isSunk()).toBe(false);
+		// 1 hit
+		expect(board.receiveAttack(9, 0)).toBe("hit");
+		expect(ship.numHits()).toBe(1);
+		expect(ship.isSunk()).toBe(false);
+		// 2 hits
+		expect(board.receiveAttack(9, 1)).toBe("hit");
+		expect(ship.numHits()).toBe(2);
+		expect(ship.isSunk()).toBe(false);
+		// 3 hits
+		expect(board.receiveAttack(9, 2)).toBe("hit");
+		expect(ship.numHits()).toBe(3);
+		expect(ship.isSunk()).toBe(false);
+		// 4 hits and sunk
+		expect(board.receiveAttack(9, 3)).toBe("hit");
+		expect(ship.numHits()).toBe(4);
+		expect(ship.isSunk()).toBe(true);
+	});
 });
