@@ -1,10 +1,12 @@
 import Ship from "./ship.js";
+import Player from "./player.js";
 
 class Gameboard {
 	constructor(size = 10) {
 		this.size = size;
 		this.board = [];
 		this.ships = [];
+		this.player = null;
 		this.initializeBoard();
 	}
 
@@ -36,6 +38,7 @@ class Gameboard {
 			const cell = this.board[newX][newY];
 			cell.isEmpty = false;
 			cell.ship = newShip;
+			this.ships.push(newShip);
 		}
 		return true;
 	}
@@ -95,6 +98,17 @@ class Gameboard {
 
 	getShip(x, y) {
 		return this.board[x][y].ship;
+	}
+
+	getSize() {
+		return this.size;
+	}
+
+	addPlayer(name, isComputer) {
+		if (this.players.length === 0) {
+			const newPlayer = new Player(name, isComputer);
+			this.player = newPlayer;
+		}
 	}
 }
 
