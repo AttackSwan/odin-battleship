@@ -43,3 +43,5 @@ const gameLogic = () => {
 
 	endGame();
 };
+
+export default gameLogic;

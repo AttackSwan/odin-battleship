@@ -12,11 +12,11 @@ const addImage = (path, container) => {
 	container.appendChild(img);
 };
 
-const addButton = (className, buttonText, container) => {
+const createButton = (className, buttonText) => {
 	const button = document.createElement("button");
 	button.classList.add(className);
 	button.textContent = buttonText;
-	container.appendChild(button);
+	return button;
 };
 
-export { createDiv, addImage, addButton };
+export { createDiv, addImage, createButton };
