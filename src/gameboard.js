@@ -20,6 +20,30 @@ class Gameboard {
 			}
 			this.board.push(col);
 		}
+
+		this.loadShip(5, "carrier");
+		this.loadShip(4, "battleship");
+		this.loadShip(3, "cruiser");
+		this.loadShip(3, "submarine");
+		this.loadShip(2, "patrol boat");
+	}
+
+	loadShip(length, name) {
+		const newShip = new Ship(length, name);
+		this.ships.push(newShip);
+	}
+
+	getNextShip() {
+		if (this.ships.length > 0) {
+			return this.ships[0];
+		}
+		return null;
+	}
+
+	removeCurrentShip() {
+		if (this.ships.length > 0) {
+			this.ships.shift();
+		}
 	}
 
 	placeShip(x, y, length, isVertical, name) {
@@ -38,7 +62,6 @@ class Gameboard {
 			const cell = this.board[newX][newY];
 			cell.isEmpty = false;
 			cell.ship = newShip;
-			this.ships.push(newShip);
 		}
 		return true;
 	}

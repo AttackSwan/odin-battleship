@@ -5,6 +5,7 @@ import shipImg from "../img/splash.png";
 
 const ui = (() => {
 	const game = gameLogic();
+	let placementRotation = true;
 
 	function loadSplash() {
 		const overlay = document.querySelector(".overlay");
@@ -18,7 +19,7 @@ const ui = (() => {
 		utility.addImage(shipImg, splashImg);
 
 		const startButton = utility.createButton("yellowButton", "START!");
-		startButton.addEventListener("click", startGame);
+		startButton.addEventListener("click", loadPlacementUI);
 		splashButton.appendChild(startButton);
 
 		splash.append(splashText, splashImg, splashButton);
@@ -26,33 +27,37 @@ const ui = (() => {
 	}
 
 	function startGame() {
-		const splash = document.querySelector(".splash");
-		splash.remove();
+		const placement = document.querySelector(".placement");
+		placement.remove();
 
-		//load placementUI
-		loadPlacementUI();
-
-		// load gameUI
-		loadGameUI();
+		// // load gameUI
+		// loadGameUI();
 	}
 
 	function loadPlacementUI() {
 		const overlay = document.querySelector(".overlay");
+		const splash = document.querySelector(".splash");
+		splash.remove();
+
 		const placement = utility.createDiv("placement");
+		const ship = game.getNextShip();
 
 		const icon = utility.createDiv("placement_image");
 		const text = utility.createDiv("placement_text");
 		const rotateButton = utility.createDiv("placement_rotate");
 		const placeGrid = utility.createDiv("placement_grid");
-		placeGrid.addEventListener("mouseout", clearHighlights);
 
 		utility.addImage(shipImg, icon);
+		text.textContent = `Place your ${ship.name}!`;
 
+		// Listeners
+		placeGrid.addEventListener("mouseout", clearHighlights);
 		const button = utility.createButton("yellowButton", "ROTATE");
-		// button.addEventListener("click", startGame);
-		rotateButton.appendChild(button);
+		button.addEventListener("click", () => {
+			placementRotation = placementRotation ? false : true;
+		});
 
-		text.textContent = "Place your carrier!";
+		rotateButton.appendChild(button);
 
 		placement.append(icon, text, rotateButton, placeGrid);
 		overlay.appendChild(placement);
@@ -67,9 +72,8 @@ const ui = (() => {
 				cell.setAttribute("Data-pos", `${j}-${size - 1 - i}`);
 
 				//add listener
-				cell.addEventListener("mouseover", (e) => {
-					mouseOver(e);
-				});
+				cell.addEventListener("mouseover", mouseOver);
+				cell.addEventListener("click", placeShip);
 
 				container.appendChild(cell);
 			}
@@ -78,19 +82,22 @@ const ui = (() => {
 
 	function mouseOver(e) {
 		clearHighlights();
-		let isVertical = true; // change when required.
-		let length = 5; // change when required.
+		const ship = game.getNextShip();
+		if (!ship) {
+			removePlacementListeners();
+			return;
+		}
 
 		// get cell co-ordinates
 		const position = e.target.getAttribute("data-pos").split("-");
 		const x = parseInt(position[0]);
 		const y = parseInt(position[1]);
-		const valid = game.checkFits(x, y, length);
+		const valid = game.checkFits(x, y, ship.length, placementRotation);
 
 		// color cells if ship position is valid
-		for (let i = 0; i < length; i++) {
-			const newX = x + (isVertical ? 0 : i);
-			const newY = y + (isVertical ? i : 0);
+		for (let i = 0; i < ship.length; i++) {
+			const newX = x + (placementRotation ? 0 : i);
+			const newY = y + (placementRotation ? i : 0);
 			const cell = document.querySelector(`[data-pos="${newX}-${newY}"]`);
 
 			if (valid) {
@@ -100,6 +107,33 @@ const ui = (() => {
 					cell.classList.add("invalid_cell");
 				}
 			}
+		}
+	}
+
+	function placeShip(e) {
+		const ship = game.getNextShip();
+		if (!ship) {
+			// All ships placed
+			removePlacementListeners();
+			return;
+		}
+
+		const position = e.target.getAttribute("data-pos").split("-");
+		const x = parseInt(position[0]);
+		const y = parseInt(position[1]);
+		const valid = game.checkFits(x, y, ship.length, placementRotation);
+
+		if (valid) {
+			game.addShip(x, y, ship.length, placementRotation, ship.name);
+			for (let i = 0; i < ship.length; i++) {
+				const newX = x + (placementRotation ? 0 : i);
+				const newY = y + (placementRotation ? i : 0);
+				const cell = document.querySelector(
+					`[data-pos="${newX}-${newY}"]`
+				);
+				cell.classList.add("placed_cell");
+			}
+			game.removeCurrentShip();
 		}
 	}
 
@@ -113,10 +147,19 @@ const ui = (() => {
 		});
 	}
 
-	function loadGameUI() {
-		const content = document.querySelector(".content");
+	function removePlacementListeners() {
+		const cells = document.querySelectorAll(".grid_cell");
+		cells.forEach((cell) => {
+			cell.removeEventListener("click", placeShip);
+			cell.removeEventListener("mouseover", mouseOver);
+		});
 
-		//create
+		const button = document.querySelector(".yellowButton");
+		button.textContent = "START!";
+		button.removeEventListener("click", placeShip);
+		button.addEventListener("click", startGame);
+		button.classList.remove("yellowButton");
+		button.classList.add("greenButton");
 	}
 
 	function loadBackground() {
@@ -126,6 +169,6 @@ const ui = (() => {
 	}
 
 	loadBackground();
-	// loadSplash();
-	loadPlacementUI();
+	loadSplash();
+	// loadPlacementUI();
 })();

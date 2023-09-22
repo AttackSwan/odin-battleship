@@ -19,6 +19,18 @@ const gameLogic = () => {
 		return playerBoard.isValidXY(x, y) && playerBoard.spaceIsEmpty(x, y);
 	}
 
+	function getNextShip() {
+		return playerBoard.getNextShip();
+	}
+
+	function removeCurrentShip() {
+		playerBoard.removeCurrentShip();
+	}
+
+	function addShip(x, y, length, isVertical, name) {
+		playerBoard.placeShip(x, y, length, isVertical, name);
+	}
+
 	function populateBoards() {
 		// // Populate player's board
 		// playerBoard.placeShip(0, 0, 5, true, "Carrier");
@@ -50,7 +62,7 @@ const gameLogic = () => {
 
 	endGame();
 
-	return { checkFits, validXY };
+	return { checkFits, validXY, getNextShip, removeCurrentShip, addShip };
 };
 
 export default gameLogic;
