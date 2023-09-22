@@ -11,20 +11,27 @@ const gameLogic = () => {
 	const playerBoard = new Gameboard();
 	const aiBoard = new Gameboard();
 
-	function populateBoards() {
-		// Populate player's board
-		playerBoard.placeShip(0, 0, 5, true, "Carrier");
-		playerBoard.placeShip(3, 4, 4, false, "Battleship");
-		playerBoard.placeShip(7, 6, 3, true, "Cruiser");
-		playerBoard.placeShip(6, 2, 3, false, "Submarine");
-		playerBoard.placeShip(1, 6, 2, false, "Destroyer");
+	function checkFits(x, y, length, isVertical = true) {
+		return playerBoard.shipFits(x, y, length, isVertical);
+	}
 
-		// Populate ai's board
-		aiBoard.placeShip(0, 0, 5, true, "Carrier");
-		aiBoard.placeShip(3, 4, 4, false, "Battleship");
-		aiBoard.placeShip(7, 6, 3, true, "Cruiser");
-		aiBoard.placeShip(6, 2, 3, false, "Submarine");
-		aiBoard.placeShip(1, 6, 2, false, "Destroyer");
+	function validXY(x, y) {
+		return playerBoard.isValidXY(x, y) && playerBoard.spaceIsEmpty(x, y);
+	}
+
+	function populateBoards() {
+		// // Populate player's board
+		// playerBoard.placeShip(0, 0, 5, true, "Carrier");
+		// playerBoard.placeShip(3, 4, 4, false, "Battleship");
+		// playerBoard.placeShip(7, 6, 3, true, "Cruiser");
+		// playerBoard.placeShip(6, 2, 3, false, "Submarine");
+		// playerBoard.placeShip(1, 6, 2, false, "Destroyer");
+		// // Populate ai's board
+		// aiBoard.placeShip(0, 0, 5, true, "Carrier");
+		// aiBoard.placeShip(3, 4, 4, false, "Battleship");
+		// aiBoard.placeShip(7, 6, 3, true, "Cruiser");
+		// aiBoard.placeShip(6, 2, 3, false, "Submarine");
+		// aiBoard.placeShip(1, 6, 2, false, "Destroyer");
 	}
 
 	function mainLoop() {
@@ -35,13 +42,15 @@ const gameLogic = () => {
 		// end game
 	}
 
-	while (!gameOver) {
-		mainLoop();
-	}
+	// while (!gameOver) {
+	// 	mainLoop();
+	// }
 
 	populateBoards();
 
 	endGame();
+
+	return { checkFits, validXY };
 };
 
 export default gameLogic;

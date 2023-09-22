@@ -1,8 +1,11 @@
 import "./style.css";
+import gameLogic from "./gameLogic.js";
 import * as utility from "./utility.js";
 import shipImg from "../img/splash.png";
 
 const ui = (() => {
+	const game = gameLogic();
+
 	function loadSplash() {
 		const overlay = document.querySelector(".overlay");
 
@@ -41,6 +44,7 @@ const ui = (() => {
 		const text = utility.createDiv("placement_text");
 		const rotateButton = utility.createDiv("placement_rotate");
 		const placeGrid = utility.createDiv("placement_grid");
+		placeGrid.addEventListener("mouseout", clearHighlights);
 
 		utility.addImage(shipImg, icon);
 
@@ -61,14 +65,52 @@ const ui = (() => {
 			for (let j = 0; j < size; j++) {
 				const cell = utility.createDiv("grid_cell");
 				cell.setAttribute("Data-pos", `${j}-${size - 1 - i}`);
+
+				//add listener
+				cell.addEventListener("mouseover", (e) => {
+					mouseOver(e);
+				});
+
 				container.appendChild(cell);
 			}
-
-			//add listener
-			// cell.addEventListener("click", (e) => {
-			// 	placeShip(e);
-			// });
 		}
+	}
+
+	function mouseOver(e) {
+		clearHighlights();
+		let isVertical = true; // change when required.
+		let length = 5; // change when required.
+
+		// get cell co-ordinates
+		const position = e.target.getAttribute("data-pos").split("-");
+		const x = parseInt(position[0]);
+		const y = parseInt(position[1]);
+		const valid = game.checkFits(x, y, length);
+
+		// color cells if ship position is valid
+		for (let i = 0; i < length; i++) {
+			const newX = x + (isVertical ? 0 : i);
+			const newY = y + (isVertical ? i : 0);
+			const cell = document.querySelector(`[data-pos="${newX}-${newY}"]`);
+
+			if (valid) {
+				cell.classList.add("valid_cell");
+			} else {
+				if (game.validXY(newX, newY)) {
+					cell.classList.add("invalid_cell");
+				}
+			}
+		}
+	}
+
+	function clearHighlights() {
+		const highlights = document.querySelectorAll(
+			".valid_cell, .invalid_cell"
+		);
+		highlights.forEach((cell) => {
+			cell.classList.remove("valid_cell");
+			cell.classList.remove("invalid_cell");
+		});
 	}
 
 	function loadGameUI() {
@@ -84,6 +126,6 @@ const ui = (() => {
 	}
 
 	loadBackground();
-	loadSplash();
-	// loadPlacementUI();
+	// loadSplash();
+	loadPlacementUI();
 })();

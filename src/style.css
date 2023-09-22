@@ -144,3 +144,11 @@ body {
 	height: 35px;
 	width: 35px;
 }
+
+.valid_cell {
+	background-color: greenyellow;
+}
+
+.invalid_cell {
+	background-color: red;
+}
