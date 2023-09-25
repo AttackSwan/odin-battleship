@@ -52,15 +52,36 @@ const gameLogic = () => {
 		return this.isOver;
 	}
 
+	function changePlayer() {
+		isPlayerTurn = isPlayerTurn ? false : true;
+	}
+
 	function attack(x, y) {
 		if (!isPlayerTurn) {
 			return;
 		}
 		// Make attack on ai board and change players
 		const result = aiBoard.receiveAttack(x, y);
-		isPlayerTurn = isPlayerTurn ? false : true;
-		// makeAiAttack();
+		changePlayer();
+		makeAiAttack();
 
+		return result;
+	}
+
+	function makeAiAttack() {
+		const targets = playerBoard.getAvailableCells();
+
+		if (targets.length === 0) {
+			return null;
+		}
+
+		// AI version 1: random attack
+		// generate random attack
+		const randomTargetIndex = Math.floor(Math.random() * targets.length);
+		const targetCell = targets[randomTargetIndex];
+
+		const result = playerBoard.receiveAttack(targetCell.x, targetCell.y);
+		changePlayer();
 		return result;
 	}
 

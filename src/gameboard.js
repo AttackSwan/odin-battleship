@@ -6,7 +6,8 @@ class Gameboard {
 		this.size = size;
 		this.board = [];
 		this.ships = [];
-		this.player = null;
+		// this.player = null;
+		this.availableCells = [];
 		this.initializeBoard();
 	}
 
@@ -17,6 +18,7 @@ class Gameboard {
 
 			for (let y = 0; y < this.size; y++) {
 				col.push({ isEmpty: true, isAttacked: false, ship: null });
+				this.availableCells.push({ x, y });
 			}
 			this.board.push(col);
 		}
@@ -38,6 +40,10 @@ class Gameboard {
 			return this.ships[0];
 		}
 		return null;
+	}
+
+	getAvailableCells() {
+		return this.availableCells;
 	}
 
 	removeCurrentShip() {
@@ -101,6 +107,15 @@ class Gameboard {
 			ship.hit();
 			result = "hit";
 		}
+
+		// Find attack index in availableCells and remove
+		const cellIndex = this.availableCells.findIndex(
+			(cell) => cell.x === x && cell.y === y
+		);
+		if (cellIndex !== -1) {
+			this.availableCells.splice(cellIndex, 1);
+		}
+
 		return result;
 	}
 
@@ -127,12 +142,12 @@ class Gameboard {
 		return this.size;
 	}
 
-	addPlayer(name, isComputer) {
-		if (this.players.length === 0) {
-			const newPlayer = new Player(name, isComputer);
-			this.player = newPlayer;
-		}
-	}
+	// addPlayer(name, isComputer) {
+	// 	if (this.players.length === 0) {
+	// 		const newPlayer = new Player(name, isComputer);
+	// 		this.player = newPlayer;
+	// 	}
+	// }
 
 	getCellContent(x, y) {
 		return this.board[x][y];

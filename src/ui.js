@@ -64,36 +64,10 @@ const ui = (() => {
 		turnsLoop(); // Start main game loop.
 	}
 
-	function turnsLoop() {
-		// while (!game.isGameOver()) {}
-	}
-
-	function drawBoard(grid, isPlayer) {
-		// Color grid cells depending on content and attacks
-		const cells = grid.querySelectorAll(".grid_cell");
-		cells.forEach((cell) => {
-			const position = cell.getAttribute("data-pos").split("-");
-			const x = parseInt(position[0]);
-			const y = parseInt(position[1]);
-
-			const cellContent = game.getCellContent(x, y, isPlayer);
-
-			if (cellContent.ship !== null) {
-				if (isPlayer) {
-					cell.classList.add("placed_cell");
-				} else if (cellContent.isAttacked) {
-					cell.classList.add("hit_cell");
-				}
-			} else if (cellContent.isEmpty && cellContent.isAttacked) {
-				cell.classList.add("miss_cell");
-			}
-		});
-	}
-
 	function loadPlacementUI() {
 		const overlay = document.querySelector(".overlay");
-		const splash = document.querySelector(".splash");
-		splash.remove();
+		// const splash = document.querySelector(".splash");
+		// splash.remove();
 
 		const placement = utility.createDiv("placement");
 		const ship = game.getNextShip();
@@ -120,6 +94,32 @@ const ui = (() => {
 		addGrid(placeGrid, gridSize, "placement");
 	}
 
+	function turnsLoop() {
+		// while (!game.isGameOver()) {}
+	}
+
+	function drawBoard(grid, isPlayer) {
+		// Color grid cells depending on content and attacks
+		const cells = grid.querySelectorAll(".grid_cell");
+		cells.forEach((cell) => {
+			const position = cell.getAttribute("data-pos").split("-");
+			const x = parseInt(position[0]);
+			const y = parseInt(position[1]);
+
+			const cellContent = game.getCellContent(x, y, isPlayer);
+
+			if (cellContent.ship !== null) {
+				if (isPlayer) {
+					cell.classList.add("placed_cell");
+				} else if (cellContent.isAttacked) {
+					cell.classList.add("hit_cell");
+				}
+			} else if (cellContent.isEmpty && cellContent.isAttacked) {
+				cell.classList.add("miss_cell");
+			}
+		});
+	}
+
 	function addGrid(container, size, type, isPlayer) {
 		// Types are "placement" and "game" grids
 
@@ -132,15 +132,15 @@ const ui = (() => {
 
 				// Placement Grid
 				if (type === "placement") {
-					cell.addEventListener("mouseover", placementMouseOver);
+					cell.addEventListener("mouseover", () => {
+						placementMouseOver(x, y);
+					});
 					cell.addEventListener("click", placeShip);
 				}
 				// ai grid
 				else if ((type = "game" && isPlayer === false)) {
 					cell.addEventListener("mouseover", () => {
-						if (game.isPlayersTurn()) {
-							cell.classList.add("cell_highlight");
-						}
+						highlightCell(cell);
 					});
 					cell.addEventListener("mouseout", clearHighlights);
 					cell.addEventListener("click", () => {
@@ -162,7 +162,14 @@ const ui = (() => {
 		}
 	}
 
-	function placementMouseOver(e) {
+	function highlightCell(cell) {
+		if (game.isPlayersTurn()) {
+			cell.classList.add("cell_highlight");
+		}
+	}
+
+	// function placementMouseOver(e) {
+	function placementMouseOver(x, y) {
 		clearHighlights();
 		const ship = game.getNextShip();
 		if (!ship) {
@@ -170,10 +177,6 @@ const ui = (() => {
 			return;
 		}
 
-		// get cell co-ordinates
-		const position = e.target.getAttribute("data-pos").split("-");
-		const x = parseInt(position[0]);
-		const y = parseInt(position[1]);
 		const valid = game.checkFits(x, y, ship.length, placementRotation);
 
 		// color cells if ship position is valid
