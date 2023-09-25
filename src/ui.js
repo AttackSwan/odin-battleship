@@ -47,8 +47,8 @@ const ui = (() => {
 		const aiText = utility.createDiv("ai_text");
 		const grids = utility.createDiv("grids");
 
-		addGameGrid(playerGrid, gridSize);
-		addGameGrid(aiGrid, gridSize);
+		addGrid(playerGrid, gridSize, "game", true);
+		addGrid(aiGrid, gridSize, "game", false);
 		utility.addImage(shipImg, icon);
 
 		playerZone.append(playerGrid, playerText);
@@ -60,6 +60,12 @@ const ui = (() => {
 		overlay.append(playfield);
 
 		drawBoard(playerGrid, true);
+
+		turnsLoop(); // Start main game loop.
+	}
+
+	function turnsLoop() {
+		// while (!game.isGameOver()) {}
 	}
 
 	function drawBoard(grid, isPlayer) {
@@ -111,42 +117,52 @@ const ui = (() => {
 
 		placement.append(icon, text, rotateButton, placeGrid);
 		overlay.appendChild(placement);
-		addPlacementGrid(placeGrid, gridSize);
+		addGrid(placeGrid, gridSize, "placement");
 	}
 
-	function addPlacementGrid(container, size) {
-		//create and append cells
+	function addGrid(container, size, type, isPlayer) {
+		// Types are "placement" and "game" grids
+
 		for (let i = 0; i < size; i++) {
 			for (let j = 0; j < size; j++) {
+				const x = j;
+				const y = size - 1 - i;
 				const cell = utility.createDiv("grid_cell");
-				cell.setAttribute("Data-pos", `${j}-${size - 1 - i}`);
+				cell.setAttribute("Data-pos", `${x}-${y}`);
 
-				//add listener
-				cell.addEventListener("mouseover", mouseOver);
-				cell.addEventListener("click", placeShip);
+				// Placement Grid
+				if (type === "placement") {
+					cell.addEventListener("mouseover", placementMouseOver);
+					cell.addEventListener("click", placeShip);
+				}
+				// ai grid
+				else if ((type = "game" && isPlayer === false)) {
+					cell.addEventListener("mouseover", () => {
+						if (game.isPlayersTurn()) {
+							cell.classList.add("cell_highlight");
+						}
+					});
+					cell.addEventListener("mouseout", clearHighlights);
+					cell.addEventListener("click", () => {
+						attackCell(cell, x, y);
+					});
+				}
 
 				container.appendChild(cell);
 			}
 		}
 	}
 
-	function addGameGrid(container, size) {
-		//create and append cells
-		for (let i = 0; i < size; i++) {
-			for (let j = 0; j < size; j++) {
-				const cell = utility.createDiv("grid_cell");
-				cell.setAttribute("Data-pos", `${j}-${size - 1 - i}`);
-
-				//add listener
-				// cell.addEventListener("mouseover", mouseOver);
-				// cell.addEventListener("click", placeShip);
-
-				container.appendChild(cell);
-			}
+	function attackCell(cell, x, y) {
+		const result = game.attack(x, y);
+		if (result === "hit") {
+			cell.classList.add("cell_hit");
+		} else if (result === "miss") {
+			cell.classList.add("cell_miss");
 		}
 	}
 
-	function mouseOver(e) {
+	function placementMouseOver(e) {
 		clearHighlights();
 		const ship = game.getNextShip();
 		if (!ship) {
@@ -205,11 +221,12 @@ const ui = (() => {
 
 	function clearHighlights() {
 		const highlights = document.querySelectorAll(
-			".valid_cell, .invalid_cell"
+			".valid_cell, .invalid_cell, .cell_highlight"
 		);
 		highlights.forEach((cell) => {
 			cell.classList.remove("valid_cell");
 			cell.classList.remove("invalid_cell");
+			cell.classList.remove("cell_highlight");
 		});
 	}
 
@@ -217,7 +234,7 @@ const ui = (() => {
 		const cells = document.querySelectorAll(".grid_cell");
 		cells.forEach((cell) => {
 			cell.removeEventListener("click", placeShip);
-			cell.removeEventListener("mouseover", mouseOver);
+			cell.removeEventListener("mouseover", placementMouseOver);
 		});
 
 		const button = document.querySelector(".yellowButton");

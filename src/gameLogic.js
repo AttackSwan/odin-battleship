@@ -5,7 +5,8 @@ const gameLogic = () => {
 	// create players
 	const player = new Player("player");
 	const ai = new Player("ai", true);
-	let currentPlayer = "player";
+	let isPlayerTurn = true;
+	let isOver = false;
 
 	// create gameboards
 	const playerBoard = new Gameboard();
@@ -43,6 +44,26 @@ const gameLogic = () => {
 		playerBoard.placeShip(x, y, length, isVertical, name);
 	}
 
+	function isPlayersTurn() {
+		return isPlayerTurn;
+	}
+
+	function isGameOver() {
+		return this.isOver;
+	}
+
+	function attack(x, y) {
+		if (!isPlayerTurn) {
+			return;
+		}
+		// Make attack on ai board and change players
+		const result = aiBoard.receiveAttack(x, y);
+		isPlayerTurn = isPlayerTurn ? false : true;
+		// makeAiAttack();
+
+		return result;
+	}
+
 	function populateBoards() {
 		// Populate player's board
 		playerBoard.placeShip(0, 0, 5, true, "Carrier");
@@ -58,27 +79,16 @@ const gameLogic = () => {
 		aiBoard.placeShip(1, 6, 2, false, "Destroyer");
 	}
 
-	function mainLoop() {
-		// step through main loop
-	}
-
-	function endGame() {
-		// end game
-	}
-
-	// while (!gameOver) {
-	// 	mainLoop();
-	// }
-
 	populateBoards();
-
-	endGame();
 
 	return {
 		addShip,
+		attack,
 		checkFits,
 		getCellContent,
+		isPlayersTurn,
 		getNextShip,
+		isGameOver,
 		removeCurrentShip,
 		validXY,
 	};

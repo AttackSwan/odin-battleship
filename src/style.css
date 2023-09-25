@@ -241,3 +241,15 @@ body {
 	height: 500px;
 	justify-content: space-between;
 }
+
+.cell_highlight {
+	background-color: lightskyblue;
+}
+
+.cell_hit {
+	background-color: red;
+}
+
+.cell_miss {
+	background-color: white;
+}
