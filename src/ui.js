@@ -5,6 +5,7 @@ import shipImg from "../img/splash.png";
 
 const ui = (() => {
 	const game = gameLogic();
+	const gridSize = 10;
 	let placementRotation = true;
 
 	function loadSplash() {
@@ -27,11 +28,47 @@ const ui = (() => {
 	}
 
 	function startGame() {
-		const placement = document.querySelector(".placement");
-		placement.remove();
+		// const placement = document.querySelector(".placement");
+		const overlay = document.querySelector(".overlay");
+		// placement.remove();
 
-		// // load gameUI
-		// loadGameUI();
+		const playfield = utility.createDiv("playfield");
+		const grids = utility.createDiv("grids");
+		const upperText = utility.createDiv("grid_upperText");
+		const playerGrid = utility.createDiv("player_grid");
+		const aiGrid = utility.createDiv("ai_grid");
+		const lowerText = utility.createDiv("grid_lowerText");
+
+		addGameGrid(playerGrid, gridSize);
+		addGameGrid(aiGrid, gridSize);
+		grids.append(playerGrid, aiGrid);
+
+		playfield.append(upperText, grids, lowerText);
+		overlay.appendChild(playfield);
+
+		drawBoard(playerGrid, true);
+	}
+
+	function drawBoard(grid, isPlayer) {
+		// Color grid cells depending on content and attacks
+		const cells = grid.querySelectorAll(".grid_cell");
+		cells.forEach((cell) => {
+			const position = cell.getAttribute("data-pos").split("-");
+			const x = parseInt(position[0]);
+			const y = parseInt(position[1]);
+
+			const cellContent = game.getCellContent(x, y, isPlayer);
+
+			if (cellContent.ship !== null) {
+				if (isPlayer) {
+					cell.classList.add("placed_cell");
+				} else if (cellContent.isAttacked) {
+					cell.classList.add("hit_cell");
+				}
+			} else if (cellContent.isEmpty && cellContent.isAttacked) {
+				cell.classList.add("miss_cell");
+			}
+		});
 	}
 
 	function loadPlacementUI() {
@@ -61,10 +98,10 @@ const ui = (() => {
 
 		placement.append(icon, text, rotateButton, placeGrid);
 		overlay.appendChild(placement);
-		addGrid(placeGrid, 10);
+		addPlacementGrid(placeGrid, gridSize);
 	}
 
-	function addGrid(container, size) {
+	function addPlacementGrid(container, size) {
 		//create and append cells
 		for (let i = 0; i < size; i++) {
 			for (let j = 0; j < size; j++) {
@@ -74,6 +111,22 @@ const ui = (() => {
 				//add listener
 				cell.addEventListener("mouseover", mouseOver);
 				cell.addEventListener("click", placeShip);
+
+				container.appendChild(cell);
+			}
+		}
+	}
+
+	function addGameGrid(container, size) {
+		//create and append cells
+		for (let i = 0; i < size; i++) {
+			for (let j = 0; j < size; j++) {
+				const cell = utility.createDiv("grid_cell");
+				cell.setAttribute("Data-pos", `${j}-${size - 1 - i}`);
+
+				//add listener
+				// cell.addEventListener("mouseover", mouseOver);
+				// cell.addEventListener("click", placeShip);
 
 				container.appendChild(cell);
 			}
@@ -169,6 +222,7 @@ const ui = (() => {
 	}
 
 	loadBackground();
-	loadSplash();
+	// loadSplash();
 	// loadPlacementUI();
+	startGame();
 })();

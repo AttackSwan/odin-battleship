@@ -133,6 +133,10 @@ class Gameboard {
 			this.player = newPlayer;
 		}
 	}
+
+	getCellContent(x, y) {
+		return this.board[x][y];
+	}
 }
 
 export default Gameboard;

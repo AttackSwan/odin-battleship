@@ -168,7 +168,9 @@ body {
 	margin: 16px 0;
 }
 
-.placement_grid {
+.placement_grid,
+.player_grid,
+.ai_grid {
 	border: 1px solid white;
 	display: grid;
 	grid-template-columns: repeat(10, 1fr);
@@ -176,7 +178,8 @@ body {
 	max-width: 355px;
 }
 
-.placement .grid_cell {
+.placement .grid_cell,
+.grids .grid_cell {
 	border: 1px solid white;
 	height: 35px;
 	width: 35px;
@@ -192,4 +195,23 @@ body {
 
 .placed_cell {
 	background-color: var(--color-brightYellow);
+}
+
+.playfield {
+	display: flex;
+	flex-direction: column;
+	width: 75%;
+	gap: 32px;
+}
+
+.grid_upperText,
+.grid_lowerText {
+	border: 1px solid white;
+	height: 100px;
+}
+
+.grids {
+	display: flex;
+	justify-content: space-around;
+	width: 100%;
 }
