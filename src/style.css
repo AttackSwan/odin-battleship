@@ -200,18 +200,44 @@ body {
 .playfield {
 	display: flex;
 	flex-direction: column;
-	width: 75%;
 	gap: 32px;
+	width: 75%;
 }
 
-.grid_upperText,
-.grid_lowerText {
+.upper_text,
+.player_text,
+.ai_text,
+.game_text {
 	border: 1px solid white;
-	height: 100px;
+	min-height: 100px;
+	width: 100%;
 }
 
 .grids {
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-between;
 	width: 100%;
+}
+
+.game_icon {
+	align-items: center;
+	display: flex;
+	width: 352px;
+	height: 100%;
+	justify-content: center;
+}
+
+.game_icon img {
+	height: 300px;
+	align-items: center;
+}
+
+.player_zone,
+.ai_zone,
+.middle_zone {
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+	height: 500px;
+	justify-content: space-between;
 }

@@ -33,18 +33,31 @@ const ui = (() => {
 		// placement.remove();
 
 		const playfield = utility.createDiv("playfield");
-		const grids = utility.createDiv("grids");
-		const upperText = utility.createDiv("grid_upperText");
+
+		const upperText = utility.createDiv("upper_text");
+		const playerZone = utility.createDiv("player_zone");
+		const middleZone = utility.createDiv("middle_zone");
+		const aiZone = utility.createDiv("ai_zone");
+
 		const playerGrid = utility.createDiv("player_grid");
+		const playerText = utility.createDiv("player_text");
+		const icon = utility.createDiv("game_icon");
+		const gameText = utility.createDiv("game_text");
 		const aiGrid = utility.createDiv("ai_grid");
-		const lowerText = utility.createDiv("grid_lowerText");
+		const aiText = utility.createDiv("ai_text");
+		const grids = utility.createDiv("grids");
 
 		addGameGrid(playerGrid, gridSize);
 		addGameGrid(aiGrid, gridSize);
-		grids.append(playerGrid, aiGrid);
+		utility.addImage(shipImg, icon);
 
-		playfield.append(upperText, grids, lowerText);
-		overlay.appendChild(playfield);
+		playerZone.append(playerGrid, playerText);
+		middleZone.append(icon, gameText);
+		aiZone.append(aiGrid, aiText);
+
+		grids.append(playerZone, middleZone, aiZone);
+		playfield.append(upperText, grids);
+		overlay.append(playfield);
 
 		drawBoard(playerGrid, true);
 	}
