@@ -102,9 +102,20 @@ class Gameboard {
 		let result = "miss";
 		this.board[x][y].isAttacked = true;
 
+		// hit
 		if (this.board[x][y].ship) {
 			const ship = this.board[x][y].ship;
 			ship.hit();
+
+			if (ship.isSunk()) {
+				// Remove the sunk ship from the array
+				const sunkIndex = this.ships.findIndex(
+					(shipInArray) => shipInArray.length === ship.length
+				);
+				if (sunkIndex !== -1) {
+					this.ships.splice(sunkIndex, 1);
+				}
+			}
 			result = "hit";
 		}
 
@@ -142,15 +153,12 @@ class Gameboard {
 		return this.size;
 	}
 
-	// addPlayer(name, isComputer) {
-	// 	if (this.players.length === 0) {
-	// 		const newPlayer = new Player(name, isComputer);
-	// 		this.player = newPlayer;
-	// 	}
-	// }
-
 	getCellContent(x, y) {
 		return this.board[x][y];
+	}
+
+	shipsRemaining() {
+		return this.ships.length;
 	}
 }
 

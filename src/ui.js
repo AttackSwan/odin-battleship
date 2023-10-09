@@ -28,6 +28,8 @@ const ui = (() => {
 	}
 
 	function startGame() {
+		const shipsLabel = "Ships remaining";
+
 		// const placement = document.querySelector(".placement");
 		const overlay = document.querySelector(".overlay");
 		// placement.remove();
@@ -39,14 +41,30 @@ const ui = (() => {
 		const middleZone = utility.createDiv("middle_zone");
 		const aiZone = utility.createDiv("ai_zone");
 
+		// Player
 		const playerGrid = utility.createDiv("player_grid");
 		const playerText = utility.createDiv("player_text");
+		const playerShipsLabel = utility.createDiv("player_ships_label");
+		playerShipsLabel.textContent = shipsLabel;
+		const playerShipsText = utility.createDiv("player_ships_text");
+		playerShipsText.textContent = game.getShipsRemaining(true); // isPlayer = true
+		playerText.append(playerShipsLabel, playerShipsText);
+
+		// Center
 		const icon = utility.createDiv("game_icon");
 		const gameText = utility.createDiv("game_text");
+		gameText.textContent = "Begin!";
+
+		// AI
 		const aiGrid = utility.createDiv("ai_grid");
 		const aiText = utility.createDiv("ai_text");
-		const grids = utility.createDiv("grids");
+		const aiShipsLabel = utility.createDiv("ai_ships_label");
+		aiShipsLabel.textContent = shipsLabel;
+		const aiShipsText = utility.createDiv("ai_ships_text");
+		aiShipsText.textContent = game.getShipsRemaining(false); // isPlayer = false
+		aiText.append(aiShipsLabel, aiShipsText);
 
+		const grids = utility.createDiv("grids");
 		addGrid(playerGrid, gridSize, "game", true);
 		addGrid(aiGrid, gridSize, "game", false);
 		utility.addImage(shipImg, icon);
@@ -162,21 +180,20 @@ const ui = (() => {
 		}
 
 		if (result !== false) {
-			updateGameText(result);
 			// Make AI attack
 			const aiAttack = game.aiAttack();
 			updatePlayerBoard(aiAttack.x, aiAttack.y, aiAttack.result);
-			console.log(
-				`ai: attack at ${aiAttack.x},${aiAttack.y} is a ${aiAttack.result}`
-			);
+			updateGameText(result);
 		}
 	}
 
 	function updateGameText(result) {
 		const gameText = document.querySelector(".game_text");
 		const updateText = result.charAt(0).toUpperCase() + result.slice(1);
-		gameText.textContent = `${updateText}!`;
+		const playerShipsText = document.querySelector(".player_ships_text");
+		const aiShipsText = document.querySelector(".ai_ships_text");
 
+		gameText.textContent = `${updateText}!`;
 		// shake text box on hit
 		if (result === "hit") {
 			gameText.classList.add("shake");
@@ -184,6 +201,9 @@ const ui = (() => {
 				gameText.classList.remove("shake");
 			}, 1000);
 		}
+
+		playerShipsText.textContent = game.getShipsRemaining(true);
+		aiShipsText.textContent = game.getShipsRemaining(false);
 	}
 
 	function updatePlayerBoard(x, y, result) {

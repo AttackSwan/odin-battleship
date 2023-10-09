@@ -212,10 +212,20 @@ body {
 	border: 1px solid white;
 	color: white;
 	display: flex;
-	font-size: 2rem;
+	flex-direction: column;
 	justify-content: center;
 	min-height: 100px;
 	width: 100%;
+}
+
+.game_text {
+	font-size: 2rem;
+}
+
+.player_ships_label,
+.ai_ships_label {
+	font-size: 1.3rem;
+	margin-bottom: 16px;
 }
 
 .grids {

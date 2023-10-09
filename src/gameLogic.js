@@ -101,6 +101,13 @@ const gameLogic = () => {
 		aiBoard.placeShip(1, 6, 2, false, "Destroyer");
 	}
 
+	function getShipsRemaining(isPlayer) {
+		if (isPlayer) {
+			return playerBoard.shipsRemaining();
+		}
+		return aiBoard.shipsRemaining();
+	}
+
 	populateBoards();
 
 	return {
@@ -108,6 +115,7 @@ const gameLogic = () => {
 		playerAttack,
 		checkFits,
 		getCellContent,
+		getShipsRemaining,
 		isPlayersTurn,
 		getNextShip,
 		isGameOver,
