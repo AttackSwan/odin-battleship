@@ -66,8 +66,8 @@ const ui = (() => {
 
 	function loadPlacementUI() {
 		const overlay = document.querySelector(".overlay");
-		// const splash = document.querySelector(".splash");
-		// splash.remove();
+		const splash = document.querySelector(".splash");
+		splash.remove();
 
 		const placement = utility.createDiv("placement");
 		const ship = game.getNextShip();
@@ -154,7 +154,31 @@ const ui = (() => {
 	}
 
 	function attackCell(cell, x, y) {
-		const result = game.attack(x, y);
+		const result = game.playerAttack(x, y);
+		if (result === "hit") {
+			cell.classList.add("cell_hit");
+		} else if (result === "miss") {
+			cell.classList.add("cell_miss");
+		}
+
+		if (result !== false) {
+			// Make AI attack
+			const aiAttack = game.aiAttack();
+			updatePlayerBoard(aiAttack.x, aiAttack.y, aiAttack.result);
+			console.log(
+				`ai: attack at ${aiAttack.x},${aiAttack.y} is a ${aiAttack.result}`
+			);
+		}
+	}
+
+	function updatePlayerBoard(x, y, result) {
+		if (result === false) {
+			return;
+		}
+		// get player cell
+		const playerGrid = document.querySelector(".player_grid");
+		const cell = playerGrid.querySelector(`[data-pos="${x}-${y}"]`);
+		// update classList
 		if (result === "hit") {
 			cell.classList.add("cell_hit");
 		} else if (result === "miss") {

@@ -56,33 +56,34 @@ const gameLogic = () => {
 		isPlayerTurn = isPlayerTurn ? false : true;
 	}
 
-	function attack(x, y) {
+	function playerAttack(x, y) {
 		if (!isPlayerTurn) {
-			return;
+			return false;
 		}
-		// Make attack on ai board and change players
 		const result = aiBoard.receiveAttack(x, y);
+		if (!result) {
+			return false; // invalid attack
+		}
 		changePlayer();
-		makeAiAttack();
-
 		return result;
 	}
 
-	function makeAiAttack() {
+	function aiAttack() {
 		const targets = playerBoard.getAvailableCells();
 
 		if (targets.length === 0) {
 			return null;
 		}
 
-		// AI version 1: random attack
-		// generate random attack
+		// AI version 1: generate random attack
 		const randomTargetIndex = Math.floor(Math.random() * targets.length);
 		const targetCell = targets[randomTargetIndex];
 
 		const result = playerBoard.receiveAttack(targetCell.x, targetCell.y);
 		changePlayer();
-		return result;
+
+		// return attack coordinates and results in an object
+		return { x: targetCell.x, y: targetCell.y, result: result };
 	}
 
 	function populateBoards() {
@@ -104,7 +105,7 @@ const gameLogic = () => {
 
 	return {
 		addShip,
-		attack,
+		playerAttack,
 		checkFits,
 		getCellContent,
 		isPlayersTurn,
@@ -112,6 +113,7 @@ const gameLogic = () => {
 		isGameOver,
 		removeCurrentShip,
 		validXY,
+		aiAttack,
 	};
 };
 
