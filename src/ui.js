@@ -162,6 +162,7 @@ const ui = (() => {
 		}
 
 		if (result !== false) {
+			updateGameText(result);
 			// Make AI attack
 			const aiAttack = game.aiAttack();
 			updatePlayerBoard(aiAttack.x, aiAttack.y, aiAttack.result);
@@ -171,16 +172,35 @@ const ui = (() => {
 		}
 	}
 
+	function updateGameText(result) {
+		const gameText = document.querySelector(".game_text");
+		const updateText = result.charAt(0).toUpperCase() + result.slice(1);
+		gameText.textContent = `${updateText}!`;
+
+		// shake text box on hit
+		if (result === "hit") {
+			gameText.classList.add("shake");
+			setTimeout(() => {
+				gameText.classList.remove("shake");
+			}, 1000);
+		}
+	}
+
 	function updatePlayerBoard(x, y, result) {
 		if (result === false) {
 			return;
 		}
-		// get player cell
+		// Get player cell
 		const playerGrid = document.querySelector(".player_grid");
 		const cell = playerGrid.querySelector(`[data-pos="${x}-${y}"]`);
-		// update classList
+		// Update classList
 		if (result === "hit") {
 			cell.classList.add("cell_hit");
+			// Shake player board
+			playerGrid.classList.add("shake");
+			setTimeout(() => {
+				playerGrid.classList.remove("shake");
+			}, 1000);
 		} else if (result === "miss") {
 			cell.classList.add("cell_miss");
 		}

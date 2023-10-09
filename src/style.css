@@ -208,7 +208,12 @@ body {
 .player_text,
 .ai_text,
 .game_text {
+	align-items: center;
 	border: 1px solid white;
+	color: white;
+	display: flex;
+	font-size: 2rem;
+	justify-content: center;
 	min-height: 100px;
 	width: 100%;
 }
@@ -252,4 +257,30 @@ body {
 
 .cell_miss {
 	background-color: white;
+}
+
+.shake {
+	animation: shake 0.5s ease infinite;
+	color: red;
+}
+
+@keyframes shake {
+	0% {
+		transform: translateX(0);
+	}
+	20% {
+		transform: translateX(-5px);
+	}
+	40% {
+		transform: translateX(5px);
+	}
+	60% {
+		transform: translateX(-5px);
+	}
+	80% {
+		transform: translateX(5px);
+	}
+	100% {
+		transform: translateX(0);
+	}
 }
