@@ -58,6 +58,7 @@ const ui = (() => {
 		// Center
 		const icon = utility.createDiv("game_icon");
 		const gameText = utility.createDiv("game_text");
+		upperText.textContent = "Click a square to launch a torpedo!";
 		gameText.textContent = "Begin!";
 
 		// AI
@@ -91,8 +92,6 @@ const ui = (() => {
 		overlay.append(playfield);
 
 		drawBoard(playerGrid, true);
-
-		turnsLoop(); // Start main game loop.
 	}
 
 	function loadPlacementUI() {
@@ -125,10 +124,6 @@ const ui = (() => {
 		addGrid(placeGrid, gridSize, "placement");
 	}
 
-	function turnsLoop() {
-		// while (!game.isGameOver()) {}
-	}
-
 	function drawBoard(grid, isPlayer) {
 		// Color grid cells depending on content and attacks
 		const cells = grid.querySelectorAll(".grid_cell");
@@ -153,7 +148,6 @@ const ui = (() => {
 
 	function addGrid(container, size, type, isPlayer) {
 		// Types are "placement" and "game" grids
-
 		for (let i = 0; i < size; i++) {
 			for (let j = 0; j < size; j++) {
 				const x = j;
@@ -359,6 +353,4 @@ const ui = (() => {
 
 	loadBackground();
 	loadSplash();
-	// loadPlacementUI();
-	// startGame();
 })();
