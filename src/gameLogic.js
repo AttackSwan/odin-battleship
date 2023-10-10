@@ -1,7 +1,6 @@
 import Gameboard from "./gameboard";
 
 const gameLogic = () => {
-	// create players
 	let isPlayerTurn = true;
 
 	// create gameboards
@@ -82,21 +81,35 @@ const gameLogic = () => {
 		return { x: targetCell.x, y: targetCell.y, result: result };
 	}
 
-	function populateBoards() {
-		// Populate player's board
-		// Dev layout
-		// playerBoard.placeShip(0, 0, 5, true, "Carrier");
-		// playerBoard.placeShip(3, 4, 4, false, "Battleship");
-		// playerBoard.placeShip(7, 6, 3, true, "Cruiser");
-		// playerBoard.placeShip(6, 2, 3, false, "Submarine");
-		// playerBoard.placeShip(1, 6, 2, false, "Destroyer");
+	function populateAiBoard() {
+		const shipData = [
+			{ name: "Carrier", length: 5 },
+			{ name: "Battleship", length: 4 },
+			{ name: "Cruiser", length: 3 },
+			{ name: "Submarine", length: 3 },
+			{ name: "Destroyer", length: 2 },
+		];
 
-		// Populate ai's board
-		aiBoard.placeShip(0, 0, 5, true, "Carrier");
-		aiBoard.placeShip(3, 4, 4, false, "Battleship");
-		aiBoard.placeShip(7, 6, 3, true, "Cruiser");
-		aiBoard.placeShip(6, 2, 3, false, "Submarine");
-		aiBoard.placeShip(1, 6, 2, false, "Destroyer");
+		for (const shipInfo of shipData) {
+			const { name, length } = shipInfo;
+			let placed = false;
+
+			while (!placed) {
+				const vertical = Math.random() < 0.5; // Randomly choose vertical or horizontal placement
+				const x = vertical
+					? Math.floor(Math.random() * aiBoard.size)
+					: Math.floor(Math.random() * (aiBoard.size - length + 1));
+				const y = vertical
+					? Math.floor(Math.random() * (aiBoard.size - length + 1))
+					: Math.floor(Math.random() * aiBoard.size);
+
+				// Check if the ship can be placed at the random position
+				if (aiBoard.shipFits(x, y, length, vertical)) {
+					aiBoard.placeShip(x, y, length, vertical, name);
+					placed = true;
+				}
+			}
+		}
 	}
 
 	function getShipsRemaining(isPlayer) {
@@ -106,7 +119,7 @@ const gameLogic = () => {
 		return aiBoard.shipsRemaining();
 	}
 
-	populateBoards();
+	populateAiBoard();
 
 	return {
 		addShip,

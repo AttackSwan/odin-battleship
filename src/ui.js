@@ -322,11 +322,6 @@ const ui = (() => {
 	function removePlacementListeners() {
 		const grid = document.querySelector(".placement_grid");
 		grid.style.pointerEvents = "none";
-		// const cells = document.querySelectorAll(".grid_cell");
-		// cells.forEach((cell) => {
-		// 	cell.removeEventListener("click", placeShip);
-		// 	cell.removeEventListener("mouseover", placementMouseOver);
-		// });
 
 		const button = document.querySelector(".yellowButton");
 		button.classList.remove("yellowButton");
