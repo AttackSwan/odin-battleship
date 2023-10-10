@@ -1,11 +1,11 @@
 import Ship from "./ship.js";
-import Player from "./player.js";
 
 class Gameboard {
 	constructor(size = 10) {
 		this.size = size;
 		this.board = [];
 		this.ships = [];
+		this.placementShips = [];
 		// this.player = null;
 		this.availableCells = [];
 		this.initializeBoard();
@@ -32,12 +32,12 @@ class Gameboard {
 
 	loadShip(length, name) {
 		const newShip = new Ship(length, name);
-		this.ships.push(newShip);
+		this.placementShips.push(newShip);
 	}
 
 	getNextShip() {
-		if (this.ships.length > 0) {
-			return this.ships[0];
+		if (this.placementShips.length > 0) {
+			return this.placementShips[0];
 		}
 		return null;
 	}
@@ -47,8 +47,8 @@ class Gameboard {
 	}
 
 	removeCurrentShip() {
-		if (this.ships.length > 0) {
-			this.ships.shift();
+		if (this.placementShips.length > 0) {
+			this.placementShips.shift();
 		}
 	}
 
@@ -69,6 +69,8 @@ class Gameboard {
 			cell.isEmpty = false;
 			cell.ship = newShip;
 		}
+
+		this.ships.push(newShip);
 		return true;
 	}
 

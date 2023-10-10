@@ -31,9 +31,9 @@ const ui = (() => {
 	function startGame() {
 		const shipsLabel = "Ships remaining";
 
-		// const placement = document.querySelector(".placement");
+		const placement = document.querySelector(".placement");
 		const overlay = document.querySelector(".overlay");
-		// placement.remove();
+		placement.remove();
 
 		const playfield = utility.createDiv("playfield");
 
@@ -109,7 +109,7 @@ const ui = (() => {
 		const placeGrid = utility.createDiv("placement_grid");
 
 		utility.addImage(shipImg, icon);
-		text.textContent = `Place your ${ship.name}!`;
+		text.textContent = "Place your ships!";
 
 		// Listeners
 		placeGrid.addEventListener("mouseout", clearHighlights);
@@ -255,7 +255,6 @@ const ui = (() => {
 		}
 	}
 
-	// function placementMouseOver(e) {
 	function placementMouseOver(x, y) {
 		clearHighlights();
 		const ship = game.getNextShip();
@@ -321,18 +320,21 @@ const ui = (() => {
 	}
 
 	function removePlacementListeners() {
-		const cells = document.querySelectorAll(".grid_cell");
-		cells.forEach((cell) => {
-			cell.removeEventListener("click", placeShip);
-			cell.removeEventListener("mouseover", placementMouseOver);
-		});
+		const grid = document.querySelector(".placement_grid");
+		grid.style.pointerEvents = "none";
+		// const cells = document.querySelectorAll(".grid_cell");
+		// cells.forEach((cell) => {
+		// 	cell.removeEventListener("click", placeShip);
+		// 	cell.removeEventListener("mouseover", placementMouseOver);
+		// });
 
 		const button = document.querySelector(".yellowButton");
+		button.classList.remove("yellowButton");
+		button.classList.add("greenButton");
+
 		button.textContent = "START!";
 		button.removeEventListener("click", placeShip);
 		button.addEventListener("click", startGame);
-		button.classList.remove("yellowButton");
-		button.classList.add("greenButton");
 	}
 
 	function loadBackground() {
@@ -345,20 +347,23 @@ const ui = (() => {
 		const aiGrid = document.querySelector(".ai_grid");
 		const playerGraphic = document.querySelector(".player_graphic");
 		const aiGraphic = document.querySelector(".ai_graphic");
+		const infoText = document.querySelector(".upper_text");
 		const gameText = document.querySelector(".game_text");
 
 		if (playerWins) {
 			aiGraphic.style.display = "block";
 			gameText.textContent = "You win!";
+			infoText.textContent = "All computer ships destroyed!";
 		} else if (!playerWins) {
 			playerGraphic.style.display = "block";
 			gameText.textContent = "You lose!";
+			infoText.textContent = "Your ships have been destroyed!";
 		}
 		aiGrid.style.pointerEvents = "none";
 	}
 
 	loadBackground();
-	// loadSplash();
+	loadSplash();
 	// loadPlacementUI();
-	startGame();
+	// startGame();
 })();
