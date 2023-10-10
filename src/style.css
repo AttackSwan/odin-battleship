@@ -237,14 +237,34 @@ body {
 .game_icon {
 	align-items: center;
 	display: flex;
-	width: 352px;
 	height: 100%;
 	justify-content: center;
+	width: 352px;
 }
 
 .game_icon img {
 	height: 300px;
 	align-items: center;
+}
+
+.player_graphic,
+.ai_graphic {
+	display: none;
+	left: 0;
+	position: absolute;
+	top: 5%;
+}
+
+.player_grid_container,
+.ai_grid_container {
+	position: relative;
+}
+
+.player_graphic img,
+.ai_graphic img {
+	height: 100%;
+	max-width: 350px;
+	width: 100%;
 }
 
 .player_zone,
@@ -266,7 +286,14 @@ body {
 }
 
 .cell_miss {
-	background-color: white;
+	background-color: darkblue;
+}
+
+.cell_hit,
+.cell_miss {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .shake {

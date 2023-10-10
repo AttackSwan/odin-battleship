@@ -2,6 +2,7 @@ import "./style.css";
 import gameLogic from "./gameLogic.js";
 import * as utility from "./utility.js";
 import shipImg from "../img/splash.png";
+import endGraphic from "../img/gameOver.png";
 
 const ui = (() => {
 	const game = gameLogic();
@@ -42,7 +43,11 @@ const ui = (() => {
 		const aiZone = utility.createDiv("ai_zone");
 
 		// Player
+		const playerGridContainer = utility.createDiv("player_grid_container");
 		const playerGrid = utility.createDiv("player_grid");
+		const playerGraphic = utility.createDiv("player_graphic");
+		playerGridContainer.append(playerGrid, playerGraphic);
+
 		const playerText = utility.createDiv("player_text");
 		const playerShipsLabel = utility.createDiv("player_ships_label");
 		playerShipsLabel.textContent = shipsLabel;
@@ -56,7 +61,11 @@ const ui = (() => {
 		gameText.textContent = "Begin!";
 
 		// AI
+		const aiGridContainer = utility.createDiv("ai_grid_container");
 		const aiGrid = utility.createDiv("ai_grid");
+		const aiGraphic = utility.createDiv("ai_graphic");
+		aiGridContainer.append(aiGrid, aiGraphic);
+
 		const aiText = utility.createDiv("ai_text");
 		const aiShipsLabel = utility.createDiv("ai_ships_label");
 		aiShipsLabel.textContent = shipsLabel;
@@ -67,11 +76,15 @@ const ui = (() => {
 		const grids = utility.createDiv("grids");
 		addGrid(playerGrid, gridSize, "game", true);
 		addGrid(aiGrid, gridSize, "game", false);
-		utility.addImage(shipImg, icon);
 
-		playerZone.append(playerGrid, playerText);
+		// Images
+		utility.addImage(shipImg, icon);
+		utility.addImage(endGraphic, playerGraphic);
+		utility.addImage(endGraphic, aiGraphic);
+
+		playerZone.append(playerGridContainer, playerText);
 		middleZone.append(icon, gameText);
-		aiZone.append(aiGrid, aiText);
+		aiZone.append(aiGridContainer, aiText);
 
 		grids.append(playerZone, middleZone, aiZone);
 		playfield.append(upperText, grids);
@@ -175,6 +188,7 @@ const ui = (() => {
 		const result = game.playerAttack(x, y);
 		if (result === "hit") {
 			cell.classList.add("cell_hit");
+			cell.textContent = "X";
 		} else if (result === "miss") {
 			cell.classList.add("cell_miss");
 		}
@@ -202,8 +216,17 @@ const ui = (() => {
 			}, 1000);
 		}
 
-		playerShipsText.textContent = game.getShipsRemaining(true);
-		aiShipsText.textContent = game.getShipsRemaining(false);
+		const playerShipsRemaining = game.getShipsRemaining(true);
+		const aiShipsRemaining = game.getShipsRemaining(false);
+
+		playerShipsText.textContent = playerShipsRemaining;
+		aiShipsText.textContent = aiShipsRemaining;
+
+		if (playerShipsRemaining === 0) {
+			endGame(false); // playerWins = true
+		} else if (aiShipsRemaining === 0) {
+			endGame(true);
+		}
 	}
 
 	function updatePlayerBoard(x, y, result) {
@@ -316,6 +339,22 @@ const ui = (() => {
 		const content = document.querySelector(".content");
 		const overlay = utility.createDiv("overlay");
 		content.appendChild(overlay);
+	}
+
+	function endGame(playerWins) {
+		const aiGrid = document.querySelector(".ai_grid");
+		const playerGraphic = document.querySelector(".player_graphic");
+		const aiGraphic = document.querySelector(".ai_graphic");
+		const gameText = document.querySelector(".game_text");
+
+		if (playerWins) {
+			aiGraphic.style.display = "block";
+			gameText.textContent = "You win!";
+		} else if (!playerWins) {
+			playerGraphic.style.display = "block";
+			gameText.textContent = "You lose!";
+		}
+		aiGrid.style.pointerEvents = "none";
 	}
 
 	loadBackground();
